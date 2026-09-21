@@ -72,7 +72,6 @@ namespace KutuBarkodWPF.Managers
 
             double mmToPt = 2.83465;
 
-            // ETICA 3176 DIŞ FİZİKSEL KAĞIT ÖLÇÜLERİ
             double etiketEnMM = 99.1;
             double etiketBoyMM = 93.1;
             double yatayBoslukMM = 0.0;
@@ -81,7 +80,6 @@ namespace KutuBarkodWPF.Managers
             double solKenarBosluguMM = 5.9;
             double ustKenarBosluguMM = 8.8;
 
-            // --- YENİ İSTEK: İÇ GÜVENLİK BOŞLUĞU 3 MM (0.3 CM) OLARAK AYARLANDI ---
             double icBoslukMM = 3.0;
 
             double etiketEn = etiketEnMM * mmToPt;
@@ -92,11 +90,9 @@ namespace KutuBarkodWPF.Managers
             double ustKenar = ustKenarBosluguMM * mmToPt;
             double icBosluk = icBoslukMM * mmToPt;
 
-            // Etiketin içindeki GÜVENLİ ÇİZİM ALANI (3 mm içeriden)
             double cizimEn = etiketEn - (icBosluk * 2);
             double cizimBoy = etiketBoy - (icBosluk * 2);
 
-            // Ölçekleme Güvenli Alana Göre
             double scale = Math.Min(cizimEn / 380.0, cizimBoy / 360.0);
 
             double slackX = cizimEn - (380 * scale);
@@ -141,13 +137,11 @@ namespace KutuBarkodWPF.Managers
                 int col = indexInPage % 2;
                 int row = indexInPage / 2;
 
-                // KOORDİNATLAR
                 double cellX = solKenar + (col * (etiketEn + yatayBosluk));
                 double cellY = ustKenar + (row * (etiketBoy + dikeyBosluk));
 
                 gfx.Save();
 
-                // ÇİZİM NOKTASI: Kesim yeri + İç Boşluk (3mm) eklendi!
                 gfx.TranslateTransform(cellX + icBosluk - (10 * scale) + (slackX / 2.0), cellY + icBosluk - (10 * scale) + (slackY / 2.0));
                 gfx.ScaleTransform(scale, scale);
 
@@ -171,7 +165,6 @@ namespace KutuBarkodWPF.Managers
 
                         XParagraphAlignment hizalama = eleman.Hizalama == "Orta" ? XParagraphAlignment.Center : (eleman.Hizalama == "Sağ" ? XParagraphAlignment.Right : XParagraphAlignment.Left);
 
-                        // KELİME KIRILMASINI (Aşağı kaymayı) ÖNLEYEN GÖRÜNMEZ ESNEME PAYI
                         double buffer = 20.0;
                         if (hizalama == XParagraphAlignment.Left)
                         {
@@ -192,7 +185,6 @@ namespace KutuBarkodWPF.Managers
                         {
                             string deger = satirVerisi[eleman.Tag];
 
-                            // KURUM KODUNU İSTİSNASIZ 8 HANEYE TAMAMLA (Alt tire ve büyük-küçük harf duyarsız)
                             if (eleman.Tag.ToLower().Replace("_", " ").Contains("kurum kodu"))
                             {
                                 deger = deger.PadLeft(8, '0');
@@ -241,7 +233,6 @@ namespace KutuBarkodWPF.Managers
                         {
                             string val = satirVerisi.ContainsKey(qrSutunAdi) ? satirVerisi[qrSutunAdi] : "";
 
-                            // QR İÇİNDEKİ KURUM KODUNU DA 8 HANEYE TAMAMLA
                             if (qrSutunAdi.ToLower().Replace("_", " ").Contains("kurum kodu"))
                             {
                                 val = val.PadLeft(8, '0');
